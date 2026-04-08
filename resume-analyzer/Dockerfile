@@ -1,8 +1,4 @@
-FROM ubuntu:latest
-LABEL authors="Divya"
-
-ENTRYPOINT ["top", "-b"]
-FROM openjdk:17
+FROM eclipse-temurin:17-jdk
 
 WORKDIR /app
 
