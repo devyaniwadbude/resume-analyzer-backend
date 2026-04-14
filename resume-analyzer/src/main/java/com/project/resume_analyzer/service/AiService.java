@@ -9,17 +9,19 @@ import java.util.Map;
 
 @Service
 public class AiService {
-    @Value("${openai.api.key}")
+
+    @Value("${openai.api.key:}")
     private String apiKey;
 
     private final WebClient webClient = WebClient.create("https://api.openai.com/v1");
 
     public String getSuggestions(List<String> missingSkills) {
 
-        System.out.println("API KEY: " + apiKey);
+        if (apiKey == null || apiKey.isEmpty()) {
+            return "AI unavailable. Improve these skills: " + String.join(", ", missingSkills);
+        }
 
-        String prompt = "You are a career assistant. Suggest improvements for missing skills: "
-                + missingSkills;
+        String prompt = "Suggest improvements for these missing skills: " + missingSkills;
 
         try {
             Map<String, Object> requestBody = Map.of(
@@ -37,11 +39,8 @@ public class AiService {
                     .bodyToMono(Map.class)
                     .block();
 
-            System.out.println("FULL RESPONSE: " + response);
-
-
             if (response == null || response.get("choices") == null) {
-                return "No suggestions available (API issue)";
+                return "AI unavailable. Improve these skills: " + String.join(", ", missingSkills);
             }
 
             List choices = (List) response.get("choices");
@@ -51,9 +50,7 @@ public class AiService {
             return message.get("content").toString();
 
         } catch (Exception e) {
-            e.printStackTrace();
-            return "AI service temporarily unavailable. Showing basic suggestions: "
-                    + String.join(", ", missingSkills);
+            return "AI service busy. Improve these skills: " + String.join(", ", missingSkills);
         }
     }
 }

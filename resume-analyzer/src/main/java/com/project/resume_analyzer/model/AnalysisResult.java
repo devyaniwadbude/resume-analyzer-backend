@@ -1,11 +1,11 @@
 package com.project.resume_analyzer.model;
 
-import java.util.List;
+import java.util.*;
 
 public class AnalysisResult {
     private int matchScore;
-    private List<String> matchedSkills;
-    private List<String> missingSkills;
+    private Set<String> matchedSkills = new LinkedHashSet<>();
+    private Set<String> missingSkills = new LinkedHashSet<>();
     private List<String> resumeSkills;
     private String suggestions;
     private String detectedRole;
@@ -42,23 +42,19 @@ public class AnalysisResult {
         this.matchScore = matchScore;
     }
 
-
-
     public List<String> getMissingSkills() {
-        return missingSkills;
+        return new ArrayList<>(missingSkills);
     }
 
-    public void setMissingSkills(List<String> missingSkills) {
-        this.missingSkills = missingSkills;
+    public void setMissingSkills(Collection<String> missingSkills) {
+        this.missingSkills = new LinkedHashSet<>(missingSkills); // removes duplicates
     }
-
-
 
     public List<String> getMatchedSkills() {
-        return matchedSkills;
+        return new ArrayList<>(matchedSkills);
     }
 
-    public void setMatchedSkills(List<String> matchedSkills) {
-        this.matchedSkills = matchedSkills;
+    public void setMatchedSkills(Collection<String> matchedSkills) {
+        this.matchedSkills = new LinkedHashSet<>(matchedSkills); // removes duplicates
     }
 }
